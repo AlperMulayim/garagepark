@@ -53,4 +53,15 @@ public class ParkingSlotRepository {
         return  parkingSlots.get(parkingSlot.getSlotNum());
     }
 
+    public List<ParkingSlot> findAvailableSlots(){
+        return parkingSlots.stream()
+                .filter(parkingSlot -> parkingSlot.getStatus().equals(SlotStatus.AVAILABLE))
+                .collect(Collectors.toList());
+    }
+
+    public List<ParkingSlot> findAllocatedSlots(){
+        return parkingSlots.stream()
+                .filter(parkingSlot -> parkingSlot.getStatus().equals(SlotStatus.ALLOCATED))
+                .collect(Collectors.toList());
+    }
 }

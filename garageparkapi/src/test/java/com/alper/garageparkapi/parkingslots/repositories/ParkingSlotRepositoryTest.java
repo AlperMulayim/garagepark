@@ -75,4 +75,75 @@ class ParkingSlotRepositoryTest {
         ParkingSlot updatedSlot = repository.updateParkingSlot(expected);
         assertEquals(expected,updatedSlot);
     }
+
+    @Test
+    void testFindAvailableSlots(){
+        ParkingSlot expected = ParkingSlot.builder()
+                .slotNum(9)
+                .status(SlotStatus.ALLOCATED)
+                .vehicle(null)
+                .build();
+        ParkingSlot expectedA = ParkingSlot.builder()
+                .slotNum(9)
+                .status(SlotStatus.AVAILABLE)
+                .vehicle(null)
+                .build();
+        ParkingSlot expectedB = ParkingSlot.builder()
+                .slotNum(9)
+                .status(SlotStatus.AVAILABLE)
+                .vehicle(null)
+                .build();
+
+        List<ParkingSlot> slots = new ArrayList<>();
+        slots.add(expected);
+        slots.add(expectedA);
+        slots.add(expectedB);
+
+        int size = 3;
+
+        repository = new ParkingSlotRepository(slots,size);
+
+        List<ParkingSlot> results = repository.findAvailableSlots();
+        List<ParkingSlot> expectedList = new ArrayList<>();
+        expectedList.add(expectedA);
+        expectedList.add(expectedB);
+
+        assertEquals(expectedList,results);
+
+    }
+
+    @Test
+    void testFindAllocatedSlots(){
+        ParkingSlot expected = ParkingSlot.builder()
+                .slotNum(9)
+                .status(SlotStatus.ALLOCATED)
+                .vehicle(null)
+                .build();
+        ParkingSlot expectedA = ParkingSlot.builder()
+                .slotNum(9)
+                .status(SlotStatus.AVAILABLE)
+                .vehicle(null)
+                .build();
+        ParkingSlot expectedB = ParkingSlot.builder()
+                .slotNum(9)
+                .status(SlotStatus.AVAILABLE)
+                .vehicle(null)
+                .build();
+
+        List<ParkingSlot> slots = new ArrayList<>();
+        slots.add(expected);
+        slots.add(expectedA);
+        slots.add(expectedB);
+
+        int size = 3;
+
+        repository = new ParkingSlotRepository(slots,size);
+
+        List<ParkingSlot> results = repository.findAllocatedSlots();
+        List<ParkingSlot> expectedList = new ArrayList<>();
+        expectedList.add(expected);
+
+        assertEquals(expectedList,results);
+
+    }
 }
