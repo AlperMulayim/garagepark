@@ -33,6 +33,9 @@ public class ParkingSlotRepository {
         }
     }
 
+    public  Integer getParkingCapacity(){
+        return parkingCapacity;
+    }
     public  List<ParkingSlot> getParkingSlots(){
         return parkingSlots;
     }
