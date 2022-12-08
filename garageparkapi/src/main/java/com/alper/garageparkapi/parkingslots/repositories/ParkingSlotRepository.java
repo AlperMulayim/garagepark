@@ -8,6 +8,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 @AllArgsConstructor
@@ -33,6 +35,19 @@ public class ParkingSlotRepository {
 
     public  List<ParkingSlot> getParkingSlots(){
         return parkingSlots;
+    }
+
+    public Optional<ParkingSlot> findParkingSlot(int slotNum){
+        Optional<ParkingSlot> slot = parkingSlots.stream()
+                .filter(parkingSlot -> parkingSlot.getSlotNum() == slotNum)
+                .findFirst();
+
+        return slot;
+    }
+
+    public  ParkingSlot updateParkingSlot(ParkingSlot parkingSlot){
+        parkingSlots.set(parkingSlot.getSlotNum(), parkingSlot);
+        return  parkingSlots.get(parkingSlot.getSlotNum());
     }
 
 }
