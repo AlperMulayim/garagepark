@@ -10,6 +10,6 @@ import java.util.Map;
 @Service
 public class VehicleService {
     @Autowired
-    private Map<VehicleType, Integer>  vehicleSlots;
+    private Map<String, Integer>  vehicleSlots;
 
 }

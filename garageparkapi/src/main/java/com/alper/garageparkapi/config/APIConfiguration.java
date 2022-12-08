@@ -11,11 +11,11 @@ import java.util.Map;
 public class APIConfiguration {
 
     @Bean
-    public Map<VehicleType,Integer> vehicleSlots(){
-        Map<VehicleType, Integer> vehicleSlots = new HashMap<>();
-        vehicleSlots.put(VehicleType.CAR,1);
-        vehicleSlots.put(VehicleType.JEEP,2);
-        vehicleSlots.put(VehicleType.TRUCK,4);
+    public Map<String,Integer> vehicleSlots(){
+        Map<String, Integer> vehicleSlots = new HashMap<>();
+        vehicleSlots.put(VehicleType.CAR.toString(),1);
+        vehicleSlots.put(VehicleType.JEEP.toString(),2);
+        vehicleSlots.put(VehicleType.TRUCK.toString(),4);
         return vehicleSlots;
     }
 
