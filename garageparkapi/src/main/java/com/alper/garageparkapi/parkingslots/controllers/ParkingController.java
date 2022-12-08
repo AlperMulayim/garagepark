@@ -21,7 +21,12 @@ public class ParkingController {
     }
 
     @PostMapping
-    public ParkingSlot createParking(@RequestBody Vehicle vehicle){
+    public List<ParkingSlot> createParking(@RequestBody Vehicle vehicle){
         return service.createParking(vehicle);
+    }
+
+    @PostMapping("/leave")
+    public List<ParkingSlot> leavePark(@RequestParam String plate){
+        return service.leavePark(plate);
     }
 }

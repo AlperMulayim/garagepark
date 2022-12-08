@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class Vehicle {
-    private String plate;
+    private String licensePlate;
     private String color;
     private VehicleType type;
 }

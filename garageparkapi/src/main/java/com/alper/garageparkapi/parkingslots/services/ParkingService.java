@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ParkingService {
@@ -38,13 +39,12 @@ public class ParkingService {
         return repository.updateParkingSlot(parkingSlot);
     }
 
-    public ParkingSlot createParking(Vehicle vehicle){
-
-        boolean isAllowed = isParkingAreaAvailable(vehicle);
-        return null;
+    public List<ParkingSlot> createParking(Vehicle vehicle){
+        return park(vehicle);
     }
 
-    private boolean isParkingAreaAvailable(Vehicle vehicle){
+    private List<ParkingSlot> park(Vehicle vehicle){
+        List<ParkingSlot> parkedSlots = new ArrayList<>();
         int requestedParkArea = 3;
 
         List<ParkingSlot> availableSlots = repository.findAvailableSlots();
@@ -54,24 +54,24 @@ public class ParkingService {
         //not available next slot check.
 
         for (ParkingSlot slot: availableSlots){
-            List<ParkingSlot> allocatables = allocationAvailableForSlots(slot);
+            List<ParkingSlot> allocatables = allocationAvailableForSlots(slot,  requestedParkArea);
             if(allocatables.size() >= requestedParkArea){
                 System.out.println("allocate ok");
                 System.out.println(allocatables);
-                updateParkArea(allocatables,vehicle);
+                parkedSlots =  createParkArea(allocatables,vehicle);
                 break;
             }
         }
 
-        return  true;
+        return parkedSlots;
     }
 
-    private List<ParkingSlot> allocationAvailableForSlots(ParkingSlot slot){
+    private List<ParkingSlot> allocationAvailableForSlots(ParkingSlot slot, int requestedArea){
         List<ParkingSlot> allSlots = repository.getParkingSlots();
         List<ParkingSlot> canAllocate = new ArrayList<>();
 
-        if(slot.getSlotNum() + 3 < allSlots.size()) {
-            for (int i = slot.getSlotNum(); i <= slot.getSlotNum() + 3; ++i) {
+        if(slot.getSlotNum() + requestedArea < allSlots.size()) {
+            for (int i = slot.getSlotNum(); i <= slot.getSlotNum() + requestedArea; ++i) {
                 if (allSlots.get(i).getStatus().equals(SlotStatus.AVAILABLE)) {
                     canAllocate.add(allSlots.get(i));
                 }
@@ -80,13 +80,17 @@ public class ParkingService {
         return canAllocate;
     }
 
-    private void updateParkArea(List<ParkingSlot> selectedSlots, Vehicle vehicle){
-        for (ParkingSlot slot: selectedSlots){
-            ParkingSlot allocated =  allocateSlot(slot,vehicle);
-            repository.updateParkingSlot(allocated);
+    private List<ParkingSlot> createParkArea(List<ParkingSlot> selectedSlots, Vehicle vehicle){
+        List<ParkingSlot>  areaParked = new ArrayList<>();
+
+        for (int i = 0; i < selectedSlots.size() -1; ++i){
+            ParkingSlot allocated =  allocateSlot(selectedSlots.get(i),vehicle);
+            areaParked.add(repository.updateParkingSlot(allocated));
         }
         ParkingSlot shouldClose =  selectedSlots.get(selectedSlots.size() -1);
         repository.updateParkingSlot(closeSlot(shouldClose,vehicle));
+        areaParked.add(shouldClose);
+        return areaParked;
     }
     private ParkingSlot allocateSlot(ParkingSlot parkingSlot, Vehicle vehicle){
         parkingSlot.setVehicle(vehicle);
@@ -98,6 +102,20 @@ public class ParkingService {
         parkingSlot.setStatus(SlotStatus.CLOSED);
         return parkingSlot;
     }
+    public List<ParkingSlot> leavePark(String plate){
+        List<ParkingSlot> parkedSlots  = repository.findVehicleSlots(plate);
+        return parkedSlots.stream()
+                .map(this::freeSlot)
+               .collect(Collectors.toList());
+    }
+    private ParkingSlot freeSlot(ParkingSlot slot){
+        slot.setVehicle(null);
+        slot.setStatus(SlotStatus.AVAILABLE);
+        repository.updateParkingSlot(slot);
+        return  slot;
+    }
+
+
 }
 
 

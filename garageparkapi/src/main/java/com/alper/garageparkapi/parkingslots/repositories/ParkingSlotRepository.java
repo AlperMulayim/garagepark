@@ -2,6 +2,7 @@ package com.alper.garageparkapi.parkingslots.repositories;
 
 import com.alper.garageparkapi.parkingslots.entity.ParkingSlot;
 import com.alper.garageparkapi.parkingslots.enums.SlotStatus;
+import com.alper.garageparkapi.vehicles.entity.Vehicle;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -63,5 +64,12 @@ public class ParkingSlotRepository {
         return parkingSlots.stream()
                 .filter(parkingSlot -> parkingSlot.getStatus().equals(SlotStatus.ALLOCATED))
                 .collect(Collectors.toList());
+    }
+
+    public List<ParkingSlot> findVehicleSlots(String plate){
+       return parkingSlots.stream()
+                .filter(parkingSlot ->
+                     parkingSlot.getVehicle() != null && parkingSlot.getVehicle().getLicensePlate().equals(plate))
+               .collect(Collectors.toList());
     }
 }
