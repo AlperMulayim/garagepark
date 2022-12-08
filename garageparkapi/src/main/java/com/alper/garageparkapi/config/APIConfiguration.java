@@ -20,7 +20,7 @@ public class APIConfiguration {
     }
 
     @Bean
-    public int parkingCapacity(){
+    public Integer parkingCapacity(){
         return 10;
     }
 }
