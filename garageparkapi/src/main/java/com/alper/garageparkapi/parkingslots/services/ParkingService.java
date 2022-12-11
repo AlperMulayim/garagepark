@@ -1,8 +1,10 @@
 package com.alper.garageparkapi.parkingslots.services;
 
 import com.alper.garageparkapi.enums.VehicleType;
+import com.alper.garageparkapi.parkingslots.dtos.ParkingSlotDto;
 import com.alper.garageparkapi.parkingslots.entity.ParkingSlot;
 import com.alper.garageparkapi.parkingslots.enums.SlotStatus;
+import com.alper.garageparkapi.parkingslots.mappers.ParkingSlotMapper;
 import com.alper.garageparkapi.parkingslots.repositories.ParkingSlotRepository;
 import com.alper.garageparkapi.vehicles.entity.Vehicle;
 import lombok.AllArgsConstructor;
@@ -38,13 +40,19 @@ public class ParkingService {
     @Qualifier("capacity")
     private Integer capacityBean;
 
+    @Autowired
+    private ParkingSlotMapper parkingSlotMapper;
+
     @PostConstruct
     public  void setRepository(){
         repository.initParkingRepository(capacityBean);
     }
 
-    public List<ParkingSlot> getParkingSlots(){
-        return repository.getParkingSlots();
+    public List<ParkingSlotDto> getParkingSlots(){
+        List<ParkingSlot> parkingSlots = repository.getParkingSlots();
+        return parkingSlots.stream()
+                .map(parkingSlot -> parkingSlotMapper.toDTO(parkingSlot))
+                .collect(Collectors.toList());
     }
 
     public ParkingSlot findParkingSlot(int slot) throws Exception{
@@ -53,31 +61,27 @@ public class ParkingService {
         return parkingSlot;
     }
 
-    public ParkingSlot updateParkingSlot(ParkingSlot parkingSlot) throws  Exception{
+    public ParkingSlotDto updateParkingSlot(ParkingSlot parkingSlot) throws  Exception{
         ParkingSlot slot = findParkingSlot(parkingSlot.getSlotNum());
-        return repository.updateParkingSlot(parkingSlot);
+        ParkingSlot updated = repository.updateParkingSlot(parkingSlot);
+        return parkingSlotMapper.toDTO(updated);
     }
 
-    public List<ParkingSlot> createParking(Vehicle vehicle){
-        return park(vehicle);
+    public List<ParkingSlotDto> createParking(Vehicle vehicle){
+        List<ParkingSlot> parked = park(vehicle);
+        return parked.stream()
+                .map(parkingSlot ->  parkingSlotMapper.toDTO(parkingSlot))
+                .collect(Collectors.toList());
     }
 
     private List<ParkingSlot> park(Vehicle vehicle){
         List<ParkingSlot> parkedSlots = new ArrayList<>();
-        System.out.println(vehicleSlots);
         int requestedParkArea = vehicleSlots.get(vehicle.getType().toString());
-
         List<ParkingSlot> availableSlots = repository.findAvailableSlots();
-
-        //find next requested area is available or not
-        //if available count
-        //not available next slot check.
 
         for (ParkingSlot slot: availableSlots){
             List<ParkingSlot> allocatables = allocationAvailableForSlots(slot,  requestedParkArea);
             if(allocatables.size() >= requestedParkArea){
-                System.out.println("allocate ok");
-                System.out.println(allocatables);
                 parkedSlots =  createParkArea(allocatables,vehicle);
                 break;
             }
@@ -122,10 +126,11 @@ public class ParkingService {
         parkingSlot.setStatus(SlotStatus.CLOSED);
         return parkingSlot;
     }
-    public List<ParkingSlot> leavePark(String plate){
+    public List<ParkingSlotDto> leavePark(String plate){
         List<ParkingSlot> parkedSlots  = repository.findVehicleSlots(plate);
         return parkedSlots.stream()
                 .map(this::freeSlot)
+                .map(parkingSlot -> parkingSlotMapper.toDTO(parkingSlot))
                .collect(Collectors.toList());
     }
     private ParkingSlot freeSlot(ParkingSlot slot){
