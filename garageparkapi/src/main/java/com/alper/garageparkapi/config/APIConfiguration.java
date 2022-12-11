@@ -10,7 +10,6 @@ import java.util.Map;
 
 @Configuration
 public class APIConfiguration {
-
     @Value("${garage.capacity}")
     private  Integer capacity;
     @Bean("vehicleslots")

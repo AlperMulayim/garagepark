@@ -1,5 +1,6 @@
 package com.alper.garageparkapi.parkingslots.controllers;
 
+import com.alper.garageparkapi.parkingslots.dtos.ParkRequest;
 import com.alper.garageparkapi.parkingslots.dtos.ParkingSlotDto;
 import com.alper.garageparkapi.parkingslots.entity.ParkingSlot;
 import com.alper.garageparkapi.parkingslots.services.ParkingService;
@@ -22,8 +23,8 @@ public class ParkingController {
     }
 
     @PostMapping("/park")
-    public List<ParkingSlotDto> createParking(@RequestBody Vehicle vehicle){
-        return service.createParking(vehicle);
+    public List<ParkingSlotDto> createParking(@RequestBody ParkRequest parkRequest){
+        return service.createParking(parkRequest.getVehicle());
     }
 
     @PostMapping("/leave")
