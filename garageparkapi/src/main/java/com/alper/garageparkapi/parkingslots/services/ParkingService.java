@@ -3,6 +3,7 @@ package com.alper.garageparkapi.parkingslots.services;
 import com.alper.garageparkapi.enums.VehicleType;
 import com.alper.garageparkapi.parkingslots.dtos.CarParkStatus;
 import com.alper.garageparkapi.parkingslots.dtos.ParkArea;
+import com.alper.garageparkapi.parkingslots.dtos.ParkRequest;
 import com.alper.garageparkapi.parkingslots.dtos.ParkingSlotDto;
 import com.alper.garageparkapi.parkingslots.entity.ParkingSlot;
 import com.alper.garageparkapi.parkingslots.enums.SlotStatus;
@@ -145,37 +146,54 @@ public class ParkingService {
     public CarParkStatus  getCarParkStatus(){
         List<ParkingSlot> slots;
         List<ParkArea> parkAreas = new ArrayList<>();
-        CarParkStatus parkStatus;
 
         slots = repository.getParkingSlots().stream()
                 .filter(slot-> slot.getVehicle() != null)
                 .collect(Collectors.toList());
 
-        Map<String,List<ParkingSlot>> groupedSlots = slots.stream()
-               .collect(Collectors.groupingBy(slot-> slot.getVehicle().getLicensePlate()));
+        Map<String,List<ParkingSlot>> groupedSlots = groupSlotsByPlate(slots);
 
+        parkAreas = getParkedArea(groupedSlots);
+        return parkStatus(parkAreas,slots.size(),capacityBean);
+    }
+
+    private List<ParkArea> getParkedArea(Map<String, List<ParkingSlot>> groupedSlots ){
+        List<ParkArea> areas = new ArrayList<>();
 
         for(String  plate : groupedSlots.keySet()){
             List<ParkingSlot> carSlots = groupedSlots.get(plate);
-
-            String slotInfo =  carSlots.stream()
-                    .map(slot-> slot.getSlotNum().toString())
-                    .collect(Collectors.joining("- "));
-
-            ParkArea parkArea = ParkArea.builder()
-                    .carColor(carSlots.get(0).getVehicle().getColor())
-                    .plate(plate)
-                    .slotInfo(slotInfo)
-                    .build();
-
-            parkAreas.add(parkArea);
+            String slotInfo =  getSlotInfo(carSlots);
+            ParkArea parkArea =  buildParkArea(carSlots.get(0).getVehicle(), slotInfo);
+            areas.add(parkArea);
         }
-        return CarParkStatus.builder()
-                .parks(parkAreas)
-                .totalCarsInPark(parkAreas.size())
-                .totalAllocatedSlots(slots.size())
-                .totalEmptySlots(capacityBean - slots.size())
-                .capacity(capacityBean)
+        return areas;
+    }
+
+    private Map<String, List<ParkingSlot>> groupSlotsByPlate(List<ParkingSlot> slots){
+        return slots.stream()
+                .collect(Collectors.groupingBy(slot-> slot.getVehicle().getLicensePlate()));
+    }
+    private  String getSlotInfo(List<ParkingSlot> slots){
+        return slots.stream()
+                .map(slot-> slot.getSlotNum().toString())
+                .collect(Collectors.joining("- "));
+    }
+
+    private ParkArea buildParkArea(Vehicle vehicle,String slotInfo){
+       return ParkArea.builder()
+                .carColor(vehicle.getColor())
+                .plate(vehicle.getLicensePlate())
+                .slotInfo(slotInfo)
+                .build();
+    }
+
+    private CarParkStatus parkStatus(List<ParkArea> areas, Integer allocatedSlots, Integer capacity){
+       return CarParkStatus.builder()
+                .parks(areas)
+                .totalCarsInPark(areas.size())
+                .totalAllocatedSlots(allocatedSlots)
+                .totalEmptySlots(capacity - allocatedSlots)
+                .capacity(capacity)
                 .build();
     }
 

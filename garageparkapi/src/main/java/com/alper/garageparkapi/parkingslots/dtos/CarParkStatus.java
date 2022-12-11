@@ -1,5 +1,6 @@
 package com.alper.garageparkapi.parkingslots.dtos;
 
+import com.alper.garageparkapi.enums.VehicleType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,5 +18,4 @@ public class CarParkStatus {
     private Integer totalAllocatedSlots;
     private Integer totalEmptySlots;
     private Integer capacity;
-
 }
