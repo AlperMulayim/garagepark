@@ -1,6 +1,8 @@
 package com.alper.garageparkapi.parkingslots.services;
 
 import com.alper.garageparkapi.enums.VehicleType;
+import com.alper.garageparkapi.parkingslots.dtos.CarParkStatus;
+import com.alper.garageparkapi.parkingslots.dtos.ParkArea;
 import com.alper.garageparkapi.parkingslots.dtos.ParkingSlotDto;
 import com.alper.garageparkapi.parkingslots.entity.ParkingSlot;
 import com.alper.garageparkapi.parkingslots.enums.SlotStatus;
@@ -138,6 +140,43 @@ public class ParkingService {
         slot.setStatus(SlotStatus.AVAILABLE);
         repository.updateParkingSlot(slot);
         return  slot;
+    }
+
+    public CarParkStatus  getCarParkStatus(){
+        List<ParkingSlot> slots;
+        List<ParkArea> parkAreas = new ArrayList<>();
+        CarParkStatus parkStatus;
+
+        slots = repository.getParkingSlots().stream()
+                .filter(slot-> slot.getVehicle() != null)
+                .collect(Collectors.toList());
+
+        Map<String,List<ParkingSlot>> groupedSlots = slots.stream()
+               .collect(Collectors.groupingBy(slot-> slot.getVehicle().getLicensePlate()));
+
+
+        for(String  plate : groupedSlots.keySet()){
+            List<ParkingSlot> carSlots = groupedSlots.get(plate);
+
+            String slotInfo =  carSlots.stream()
+                    .map(slot-> slot.getSlotNum().toString())
+                    .collect(Collectors.joining("- "));
+
+            ParkArea parkArea = ParkArea.builder()
+                    .carColor(carSlots.get(0).getVehicle().getColor())
+                    .plate(plate)
+                    .slotInfo(slotInfo)
+                    .build();
+
+            parkAreas.add(parkArea);
+        }
+        return CarParkStatus.builder()
+                .parks(parkAreas)
+                .totalCarsInPark(parkAreas.size())
+                .totalAllocatedSlots(slots.size())
+                .totalEmptySlots(capacityBean - slots.size())
+                .capacity(capacityBean)
+                .build();
     }
 
 }

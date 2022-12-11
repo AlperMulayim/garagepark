@@ -1,5 +1,6 @@
 package com.alper.garageparkapi.parkingslots.controllers;
 
+import com.alper.garageparkapi.parkingslots.dtos.CarParkStatus;
 import com.alper.garageparkapi.parkingslots.dtos.ParkRequest;
 import com.alper.garageparkapi.parkingslots.dtos.ParkingSlotDto;
 import com.alper.garageparkapi.parkingslots.entity.ParkingSlot;
@@ -18,8 +19,8 @@ public class ParkingController {
     private ParkingService service;
 
     @GetMapping("/status")
-    public List<ParkingSlotDto> getSlots(){
-        return service.getParkingSlots();
+    public CarParkStatus getSlots(){
+        return service.getCarParkStatus();
     }
 
     @PostMapping("/park")
