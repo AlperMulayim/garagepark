@@ -4,7 +4,7 @@ import com.alper.garageparkapi.parkingslots.entity.ParkingSlot;
 import com.alper.garageparkapi.parkingslots.enums.SlotStatus;
 import com.alper.garageparkapi.vehicles.entity.Vehicle;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -14,17 +14,15 @@ import java.util.stream.Collectors;
 
 @Repository
 @AllArgsConstructor
+@NoArgsConstructor
 public class ParkingSlotRepository {
-
     private List<ParkingSlot> parkingSlots;
-
-    private  Integer parkingCapacity = 10;
-
-    @Autowired
-    public ParkingSlotRepository(){
+    private  Integer capacity;
+    public void initParkingRepository(Integer capacity){
         parkingSlots = new ArrayList<>();
+        this.capacity = capacity;
 
-        for (int i = 0; i < parkingCapacity; ++i){
+        for (int i = 0; i < capacity; ++i){
             ParkingSlot parkingSlot =  ParkingSlot.builder()
                     .slotNum(i)
                     .status(SlotStatus.AVAILABLE)
@@ -35,7 +33,7 @@ public class ParkingSlotRepository {
     }
 
     public  Integer getParkingCapacity(){
-        return parkingCapacity;
+        return capacity;
     }
     public  List<ParkingSlot> getParkingSlots(){
         return parkingSlots;

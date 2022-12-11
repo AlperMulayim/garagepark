@@ -20,6 +20,7 @@ class ParkingSlotRepositoryTest {
     @BeforeEach
     void init(){
         repository = new ParkingSlotRepository();
+        repository.initParkingRepository(10);
     }
 
     @Test

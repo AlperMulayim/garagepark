@@ -5,9 +5,15 @@ import com.alper.garageparkapi.parkingslots.entity.ParkingSlot;
 import com.alper.garageparkapi.parkingslots.enums.SlotStatus;
 import com.alper.garageparkapi.parkingslots.repositories.ParkingSlotRepository;
 import com.alper.garageparkapi.vehicles.entity.Vehicle;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import javax.print.DocFlavor;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,13 +22,26 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
+@NoArgsConstructor
 public class ParkingService {
 
-    @Autowired
-    private ParkingSlotRepository repository;
 
     @Autowired
+    @Qualifier("vehicleslots")
     private Map<String, Integer> vehicleSlots;
+
+    @Autowired
+    private  ParkingSlotRepository repository;
+
+    @Autowired
+    @Qualifier("capacity")
+    private Integer capacityBean;
+
+    @PostConstruct
+    public  void setRepository(){
+        repository.initParkingRepository(capacityBean);
+    }
 
     public List<ParkingSlot> getParkingSlots(){
         return repository.getParkingSlots();
@@ -45,7 +64,8 @@ public class ParkingService {
 
     private List<ParkingSlot> park(Vehicle vehicle){
         List<ParkingSlot> parkedSlots = new ArrayList<>();
-        int requestedParkArea = 3;
+        System.out.println(vehicleSlots);
+        int requestedParkArea = vehicleSlots.get(vehicle.getType().toString());
 
         List<ParkingSlot> availableSlots = repository.findAvailableSlots();
 
@@ -114,7 +134,6 @@ public class ParkingService {
         repository.updateParkingSlot(slot);
         return  slot;
     }
-
 
 }
 

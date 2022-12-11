@@ -9,18 +9,18 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/park")
+@RequestMapping("api/v1/garage")
 public class ParkingController {
 
     @Autowired
     private ParkingService service;
 
-    @GetMapping
+    @GetMapping("/status")
     public List<ParkingSlot> getSlots(){
         return service.getParkingSlots();
     }
 
-    @PostMapping
+    @PostMapping("/park")
     public List<ParkingSlot> createParking(@RequestBody Vehicle vehicle){
         return service.createParking(vehicle);
     }

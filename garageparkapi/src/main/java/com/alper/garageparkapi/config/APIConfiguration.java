@@ -1,6 +1,7 @@
 package com.alper.garageparkapi.config;
 
 import com.alper.garageparkapi.enums.VehicleType;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -10,7 +11,9 @@ import java.util.Map;
 @Configuration
 public class APIConfiguration {
 
-    @Bean
+    @Value("${garage.capacity}")
+    private  Integer capacity;
+    @Bean("vehicleslots")
     public Map<String,Integer> vehicleSlots(){
         Map<String, Integer> vehicleSlots = new HashMap<>();
         vehicleSlots.put(VehicleType.CAR.toString(),1);
@@ -19,8 +22,9 @@ public class APIConfiguration {
         return vehicleSlots;
     }
 
-    @Bean
-    public Integer parkingCapacity(){
-        return 10;
+    @Bean("capacity")
+    public Integer capacityBean(){
+        return capacity;
     }
+
 }
