@@ -1,0 +1,99 @@
+{
+	"info": {
+		"_postman_id": "05b20fbd-9631-4061-ba5d-e820e141e334",
+		"name": "Garage Park API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "api/v1/garage/status",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/garage/status",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"garage",
+						"status"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "api/v1/garage/park",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"vehicle\": {\n            \"color\": \"blue\",\n            \"licensePlate\": \"34-ABC-123\",\n            \"allocationSlots\": 0,\n            \"type\":\"TRUCK\"\n        }\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/garage/park",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"garage",
+						"park"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "api/v1/garaga/leave",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"color\": \"black\",\n    \"licensePlate\": \"astra\",\n    \"allocationSlots\": 0\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/garage/leave?plate=34-ABC-123",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"garage",
+						"leave"
+					],
+					"query": [
+						{
+							"key": "plate",
+							"value": "34-ABC-123"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
