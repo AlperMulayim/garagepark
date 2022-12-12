@@ -32,8 +32,6 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ParkingService {
-
-
     @Autowired
     @Qualifier("vehicleslots")
     private Map<String, Integer> vehicleSlots;
@@ -47,6 +45,7 @@ public class ParkingService {
 
     @Autowired
     private ParkingSlotMapper parkingSlotMapper;
+
 
     @PostConstruct
     public  void setRepository(){
