@@ -1,6 +1,7 @@
 package com.alper.garageparkapi.parkingslots.services;
 
 import com.alper.garageparkapi.enums.VehicleType;
+import com.alper.garageparkapi.exceptions.NotFoundException;
 import com.alper.garageparkapi.parkingslots.dtos.ParkingSlotDto;
 import com.alper.garageparkapi.parkingslots.entity.ParkingSlot;
 import com.alper.garageparkapi.parkingslots.enums.SlotStatus;
@@ -108,4 +109,72 @@ class ParkingServiceTest {
 
         assertEquals(expected,result);
     }
+
+    @Test
+    void whenFindParkingSlotsWithOutOfRangeThrowsNotFoundException(){
+        assertThrows(NotFoundException.class, ()-> parkingService.findParkingSlot(-1));
+    }
+
+   @Test
+    void whenCreateParkingIfVehicleNullThrowsNotFoundException(){
+       assertThrows(NotFoundException.class, ()-> parkingService.createParking(null));
+   }
+
+   @Test
+    void whenCreataParkingWillReturnVehicleCapacityParkingSlotsAndClosedSlot(){
+        Vehicle vehicle = Vehicle.builder()
+                .type(VehicleType.TRUCK)
+                .licensePlate("34-ABC-123")
+                .color("BLUE")
+                .build();
+
+        List<ParkingSlotDto> slotDtos = parkingService.createParking(vehicle);
+        assertEquals(5,slotDtos.size());
+        assertEquals(SlotStatus.CLOSED,slotDtos.get(slotDtos.size()-1).getStatus());
+   }
+
+    @Test
+    void whenCreataParkingWillReturnVehicleCapacityParkingSlotsAndClosedSlotCar(){
+        Vehicle vehicle = Vehicle.builder()
+                .type(VehicleType.CAR)
+                .licensePlate("34-ABC-123")
+                .color("BLUE")
+                .build();
+
+        List<ParkingSlotDto> slotDtos = parkingService.createParking(vehicle);
+        assertEquals(2,slotDtos.size());
+        assertEquals(SlotStatus.CLOSED,slotDtos.get(slotDtos.size()-1).getStatus());
+    }
+
+    @Test
+    void whenCreataParkingWillReturnVehicleCapacityParkingSlotsAndClosedSlotJeep(){
+        Vehicle vehicle = Vehicle.builder()
+                .type(VehicleType.JEEP)
+                .licensePlate("34-ABC-123")
+                .color("BLUE")
+                .build();
+
+        List<ParkingSlotDto> slotDtos = parkingService.createParking(vehicle);
+        assertEquals(3,slotDtos.size());
+        assertEquals(SlotStatus.CLOSED,slotDtos.get(slotDtos.size()-1).getStatus());
+    }
+
+    @Test
+    void whenLeaveParkRequestedIfSlotNotFoundForGivenPlateThrowsException(){
+        assertThrows(NotFoundException.class,()-> parkingService.leavePark("34-ABC-123"));
+    }
+
+    @Test
+    void whenLeaveParkRequestedReturnsSlotsForGivenPlate(){
+
+        Vehicle vehicle = Vehicle.builder()
+                .type(VehicleType.JEEP)
+                .licensePlate("34-ABC-123")
+                .color("BLUE")
+                .build();
+        parkingService.createParking(vehicle);
+        List<ParkingSlotDto> slotDtos = parkingService.leavePark("34-ABC-123");
+        assertEquals(slotDtos.size(), 3);
+    }
+
 }
