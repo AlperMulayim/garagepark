@@ -1,6 +1,7 @@
 package com.alper.garageparkapi.parkingslots.services;
 
 import com.alper.garageparkapi.enums.VehicleType;
+import com.alper.garageparkapi.exceptions.NotFoundException;
 import com.alper.garageparkapi.parkingslots.dtos.CarParkStatus;
 import com.alper.garageparkapi.parkingslots.dtos.ParkArea;
 import com.alper.garageparkapi.parkingslots.dtos.ParkRequest;
@@ -129,8 +130,12 @@ public class ParkingService {
         parkingSlot.setStatus(SlotStatus.CLOSED);
         return parkingSlot;
     }
-    public List<ParkingSlotDto> leavePark(String plate){
+    public List<ParkingSlotDto> leavePark(String plate) throws  NotFoundException{
         List<ParkingSlot> parkedSlots  = repository.findVehicleSlots(plate);
+
+        if(parkedSlots.isEmpty()){
+            throw  new NotFoundException("Parked Slot Not Found Given Plate, Control Plate.");
+        }
         return parkedSlots.stream()
                 .map(this::freeSlot)
                 .map(parkingSlot -> parkingSlotMapper.toDTO(parkingSlot))
