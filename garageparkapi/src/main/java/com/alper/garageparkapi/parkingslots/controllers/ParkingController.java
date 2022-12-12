@@ -1,5 +1,6 @@
 package com.alper.garageparkapi.parkingslots.controllers;
 
+import com.alper.garageparkapi.exceptions.NotFoundException;
 import com.alper.garageparkapi.parkingslots.dtos.CarParkStatus;
 import com.alper.garageparkapi.parkingslots.dtos.ParkRequest;
 import com.alper.garageparkapi.parkingslots.dtos.ParkingSlotDto;
@@ -19,7 +20,7 @@ public class ParkingController {
     private ParkingService service;
 
     @GetMapping("/status")
-    public CarParkStatus getSlots(){
+    public CarParkStatus getStatus(){
         return service.getCarParkStatus();
     }
 
@@ -29,7 +30,7 @@ public class ParkingController {
     }
 
     @PostMapping("/leave")
-    public List<ParkingSlotDto> leavePark(@RequestParam String plate){
+    public List<ParkingSlotDto> leavePark(@RequestParam(required = true, name = "plate") String plate){
         return service.leavePark(plate);
     }
 }

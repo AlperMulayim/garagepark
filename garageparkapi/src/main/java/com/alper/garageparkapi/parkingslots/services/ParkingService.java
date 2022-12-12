@@ -60,9 +60,9 @@ public class ParkingService {
                 .collect(Collectors.toList());
     }
 
-    public ParkingSlot findParkingSlot(int slot) throws Exception{
+    public ParkingSlot findParkingSlot(int slot) throws NotFoundException{
         Optional<ParkingSlot> parkingSlotOp = repository.findParkingSlot(slot);
-        ParkingSlot parkingSlot = parkingSlotOp.orElseThrow(()-> new NullPointerException());
+        ParkingSlot parkingSlot = parkingSlotOp.orElseThrow(()-> new NotFoundException("Parking Slot Not Found"));
         return parkingSlot;
     }
 
@@ -72,7 +72,10 @@ public class ParkingService {
         return parkingSlotMapper.toDTO(updated);
     }
 
-    public List<ParkingSlotDto> createParking(Vehicle vehicle){
+    public List<ParkingSlotDto> createParking(Vehicle vehicle) throws NotFoundException{
+        if(vehicle == null){
+            throw new NotFoundException("Vehicle Not Found, Please Control Request");
+        }
         List<ParkingSlot> parked = park(vehicle);
         return parked.stream()
                 .map(parkingSlot ->  parkingSlotMapper.toDTO(parkingSlot))
@@ -82,8 +85,12 @@ public class ParkingService {
     private List<ParkingSlot> park(Vehicle vehicle) throws ParkSlotsNotAvailableException {
         List<ParkingSlot> parkedSlots = new ArrayList<>();
         int requestedParkArea = vehicleSlots.get(vehicle.getType().toString());
-        List<ParkingSlot> availableSlots = repository.findAvailableSlots();
 
+        if(!repository.findVehicleSlots(vehicle.getLicensePlate()).isEmpty()){
+            throw new  ParkSlotsNotAvailableException("Vehicle already in garage");
+        }
+
+        List<ParkingSlot> availableSlots = repository.findAvailableSlots();
         for (ParkingSlot slot: availableSlots){
             List<ParkingSlot> allocatables = allocationAvailableForSlots(slot,  requestedParkArea);
             if(allocatables.size() >= requestedParkArea){
