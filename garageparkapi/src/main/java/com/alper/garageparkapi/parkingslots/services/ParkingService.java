@@ -1,27 +1,22 @@
 package com.alper.garageparkapi.parkingslots.services;
 
-import com.alper.garageparkapi.enums.VehicleType;
 import com.alper.garageparkapi.exceptions.NotFoundException;
 import com.alper.garageparkapi.exceptions.ParkSlotsNotAvailableException;
 import com.alper.garageparkapi.parkingslots.dtos.CarParkStatus;
 import com.alper.garageparkapi.parkingslots.dtos.ParkArea;
-import com.alper.garageparkapi.parkingslots.dtos.ParkRequest;
 import com.alper.garageparkapi.parkingslots.dtos.ParkingSlotDto;
 import com.alper.garageparkapi.parkingslots.entity.ParkingSlot;
 import com.alper.garageparkapi.parkingslots.enums.SlotStatus;
 import com.alper.garageparkapi.parkingslots.mappers.ParkingSlotMapper;
 import com.alper.garageparkapi.parkingslots.repositories.ParkingSlotRepository;
-import com.alper.garageparkapi.vehicles.entity.Vehicle;
+import com.alper.garageparkapi.parkingslots.entity.Vehicle;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import javax.print.DocFlavor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package com.alper.garageparkapi.vehicles.entity;
+package com.alper.garageparkapi.parkingslots.entity;
 
 import com.alper.garageparkapi.enums.VehicleType;
 import lombok.AllArgsConstructor;

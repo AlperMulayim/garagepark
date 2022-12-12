@@ -7,12 +7,10 @@ import com.alper.garageparkapi.parkingslots.entity.ParkingSlot;
 import com.alper.garageparkapi.parkingslots.enums.SlotStatus;
 import com.alper.garageparkapi.parkingslots.mappers.ParkingSlotMapper;
 import com.alper.garageparkapi.parkingslots.repositories.ParkingSlotRepository;
-import com.alper.garageparkapi.vehicles.entity.Vehicle;
+import com.alper.garageparkapi.parkingslots.entity.Vehicle;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +19,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 class ParkingServiceTest {
     @Mock

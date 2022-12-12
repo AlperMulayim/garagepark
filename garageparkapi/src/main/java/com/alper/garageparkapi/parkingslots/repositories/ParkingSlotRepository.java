@@ -2,7 +2,6 @@ package com.alper.garageparkapi.parkingslots.repositories;
 
 import com.alper.garageparkapi.parkingslots.entity.ParkingSlot;
 import com.alper.garageparkapi.parkingslots.enums.SlotStatus;
-import com.alper.garageparkapi.vehicles.entity.Vehicle;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Repository;

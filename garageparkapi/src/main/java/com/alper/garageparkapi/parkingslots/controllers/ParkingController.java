@@ -1,12 +1,9 @@
 package com.alper.garageparkapi.parkingslots.controllers;
 
-import com.alper.garageparkapi.exceptions.NotFoundException;
 import com.alper.garageparkapi.parkingslots.dtos.CarParkStatus;
 import com.alper.garageparkapi.parkingslots.dtos.ParkRequest;
 import com.alper.garageparkapi.parkingslots.dtos.ParkingSlotDto;
-import com.alper.garageparkapi.parkingslots.entity.ParkingSlot;
 import com.alper.garageparkapi.parkingslots.services.ParkingService;
-import com.alper.garageparkapi.vehicles.entity.Vehicle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
