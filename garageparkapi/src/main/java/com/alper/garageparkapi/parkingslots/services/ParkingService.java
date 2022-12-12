@@ -2,6 +2,7 @@ package com.alper.garageparkapi.parkingslots.services;
 
 import com.alper.garageparkapi.enums.VehicleType;
 import com.alper.garageparkapi.exceptions.NotFoundException;
+import com.alper.garageparkapi.exceptions.ParkSlotsNotAvailableException;
 import com.alper.garageparkapi.parkingslots.dtos.CarParkStatus;
 import com.alper.garageparkapi.parkingslots.dtos.ParkArea;
 import com.alper.garageparkapi.parkingslots.dtos.ParkRequest;
@@ -78,7 +79,7 @@ public class ParkingService {
                 .collect(Collectors.toList());
     }
 
-    private List<ParkingSlot> park(Vehicle vehicle){
+    private List<ParkingSlot> park(Vehicle vehicle) throws ParkSlotsNotAvailableException {
         List<ParkingSlot> parkedSlots = new ArrayList<>();
         int requestedParkArea = vehicleSlots.get(vehicle.getType().toString());
         List<ParkingSlot> availableSlots = repository.findAvailableSlots();
@@ -91,6 +92,9 @@ public class ParkingService {
             }
         }
 
+        if(parkedSlots.isEmpty()){
+            throw new ParkSlotsNotAvailableException("Requested Park Slots Not Available For Vehicle, Garage is FULL, Please Go Other Garages!");
+        }
         return parkedSlots;
     }
 

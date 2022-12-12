@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-
 public class ParkingSlotDto {
     private Integer slotNum;
     private Vehicle vehicle;
